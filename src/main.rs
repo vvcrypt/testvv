@@ -35,12 +35,12 @@ struct TradeMessage {
 }
 
 struct HawkesData {
-    timestamp: i64,  // Millisekunden-Timestamp
+    timestamp: i64,  // Millisecond timestamp
     is_buy: bool,
 }
 
 struct MinuteData {
-    timestamp: i64,  // Minuten-Timestamp
+    timestamp: i64,  // Minute timestamp
     trades: Vec<HawkesData>,
 }
 
@@ -386,14 +386,14 @@ async fn process_messages() -> Result<(), Box<dyn std::error::Error>> {
     let (ws_stream, _) = connect_async(url).await?;
     let (mut write, mut read) = ws_stream.split();
     
-    println!("WebSocket verbunden!");
+    println!("WebSocket connected!");
 
     let subscribe_msg = json!({
         "op": "subscribe",
         "args": ["publicTrade.BTCUSDT"]
     });
     write.send(Message::Text(subscribe_msg.to_string())).await?;
-    println!("Subscribe-Nachricht gesendet");
+    println!("Subscribe message sent");
     
     let mut processor = TradeProcessor::new();
     
@@ -419,20 +419,20 @@ pub struct DiagnosticStats {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("\n=== Live-Trading Start ===");
-    process_messages().await  // Dann starte das Live-Trading
+    println!("\n=== Live Trading Started ===");
+    process_messages().await
 }
 
 fn test_known_parameters() {
     let test_cases = vec![
-        // (α, β, λ₀, erwartete Events/Sekunde)
-        (0.3, 2.0, 5.0,  7.1),   // Niedrige Intensität
-        (0.5, 3.0, 10.0, 14.3),  // Mittlere Intensität
-        (0.7, 4.0, 15.0, 21.4),  // Hohe Intensität
+        // (α, β, λ₀, expected events/second)
+        (0.3, 2.0, 5.0,  7.1),   // Low intensity
+        (0.5, 3.0, 10.0, 14.3),  // Medium intensity
+        (0.7, 4.0, 15.0, 21.4),  // High intensity
     ];
     
     for (true_alpha, true_beta, lambda_0, expected_rate) in test_cases {
-        println!("\nTest mit α={:.1}, β={:.1}, λ₀={:.1} (Erwartete Rate: {:.1})", 
+        println!("\nTest with α={:.1}, β={:.1}, λ₀={:.1} (Expected rate: {:.1})", 
             true_alpha, true_beta, lambda_0, expected_rate);
         
         let n_tests = 5;
@@ -446,7 +446,7 @@ fn test_known_parameters() {
             }
             
             if let Some((est_alpha, est_beta)) = estimator.estimate_parameters() {
-                println!("  Run {}: α={:.2}, β={:.2}, Rate={:.1} (Fehler: α={:+.1}%, β={:+.1}%)", 
+                println!("  Run {}: α={:.2}, β={:.2}, Rate={:.1} (Error: α={:+.1}%, β={:+.1}%)", 
                     i+1,
                     est_alpha,
                     est_beta,
@@ -492,18 +492,18 @@ fn simulate_hawkes(lambda_0: f64, alpha: f64, beta: f64, duration: f64) -> Vec<i
 }
 
 fn validate_estimator() {
-    // Realistische Parameter für Krypto-Trading
+    // Realistic parameters for crypto trading
     let true_params = vec![
-        // (α, β, λ₀, Beschreibung)
-        (2.0, 3.5, 10.0, "Normaler Markt"),
-        (3.0, 4.5, 15.0, "Volatiler Markt"),
-        (1.5, 3.0, 5.0,  "Ruhiger Markt"),
+        // (α, β, λ₀, description)
+        (2.0, 3.5, 10.0, "Normal Market"),
+        (3.0, 4.5, 15.0, "Volatile Market"),
+        (1.5, 3.0, 5.0,  "Calm Market"),
     ];
     
     for (true_alpha, true_beta, lambda_0, desc) in true_params {
         println!("\nTest: {}", desc);
         
-        // Simuliere 10 Minuten Daten
+        // Simulate 10 minutes of data
         let times = simulate_hawkes(lambda_0, true_alpha, true_beta, 600.0);
         
         let mut estimator = HawkesEstimator::new(300.0);
@@ -512,9 +512,9 @@ fn validate_estimator() {
         }
         
         if let Some((est_alpha, est_beta)) = estimator.estimate_parameters() {
-            println!("Wahr:     α={:.2}, β={:.2}, α/β={:.2}", 
+            println!("True:      α={:.2}, β={:.2}, α/β={:.2}", 
                 true_alpha, true_beta, true_alpha/true_beta);
-            println!("Geschätzt: α={:.2}, β={:.2}, α/β={:.2}", 
+            println!("Estimated: α={:.2}, β={:.2}, α/β={:.2}", 
                 est_alpha, est_beta, est_alpha/est_beta);
         }
     }

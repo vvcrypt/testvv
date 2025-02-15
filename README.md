@@ -41,8 +41,8 @@ hawkes_live/
 
 1. Clone the repository:
 ```bash
-git clone [repository-url]
-cd hawkes_live
+git clone https://github.com/vvcrypt/testvv.git
+cd testvv
 ```
 
 2. Install Rust dependencies:
@@ -61,7 +61,7 @@ pip install pandas numpy matplotlib
 ```bash
 cargo run
 ```
-This will connect to Bybit's WebSocket and start collecting trade data.
+This will connect to Bybit's WebSocket and start collecting trade data in `hawkes_results.csv`.
 
 2. After collecting sufficient data (recommended: 5+ minutes), run the analysis:
 ```bash
@@ -104,4 +104,4 @@ The program provides:
 
 ## License
 
-[Your chosen license] 
+MIT License 

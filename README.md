@@ -37,37 +37,6 @@ hawkes_live/
 - matplotlib
 - datetime
 
-## Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/vvcrypt/testvv.git
-cd testvv
-```
-
-2. Install Rust dependencies:
-```bash
-cargo build
-```
-
-3. Install Python dependencies:
-```bash
-pip install pandas numpy matplotlib
-```
-
-## Usage
-
-1. Start data collection:
-```bash
-cargo run
-```
-This will connect to Bybit's WebSocket and start collecting trade data in `hawkes_results.csv`.
-
-2. After collecting sufficient data (recommended: 5+ minutes), run the analysis:
-```bash
-python3 validate_hawkes_estimates.py
-```
-
 ## Output Analysis
 
 The program provides:
@@ -86,21 +55,6 @@ The program provides:
    - Parameter evolution
    - Intensity comparison
    - Clustering effect analysis
-
-## Parameter Interpretation
-
-- α/β ratio < 0.8: System stability
-- Higher α: Stronger market reaction to trades
-- Higher β: Faster decay of trade impact
-- Higher clustering: More concentrated trading activity
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
 
 ## License
 
